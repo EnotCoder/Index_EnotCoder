@@ -17,8 +17,24 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
 const isTouch = window.matchMedia('(hover: none)').matches;
 
 const GITHUB_USER = 'EnotCoder';
-const GITHUB_URL  = `https://github.com/${GITHUB_USER}`;
 const API_URL     = `https://api.github.com/users/${GITHUB_USER}/repos?per_page=100&sort=updated`;
+
+/* Репозиторий с самим сайтом не показываем в портфолио.
+   Имя вычисляется из адреса страницы — работает и после переименования,
+   и при переносе на свой домен. Список ниже — запасной вариант
+   при запуске index.html локально. */
+const SITE_REPOS = ['index_enotcoder'];
+
+function isSiteRepo(name) {
+  const n = String(name).toLowerCase();
+  if (SITE_REPOS.includes(n)) return true;
+  const host = location.hostname.toLowerCase();
+  if (host === 'github.io' || host.endsWith('.github.io')) {
+    const first = location.pathname.split('/').filter(Boolean)[0];
+    if (first && first.toLowerCase() === n) return true;
+  }
+  return false;
+}
 
 const GLYPHS = '█▓▒░<>/\\{}[]()=+*#@$%&!?~^|01';
 
@@ -1037,7 +1053,7 @@ async function loadFromGitHub() {
 
     if (!res.ok) throw new Error('HTTP ' + res.status);
 
-    const repos = (await res.json()).filter(r => !r.fork);
+    const repos = (await res.json()).filter(r => !r.fork && !isSiteRepo(r.name));
     if (!Array.isArray(repos) || !repos.length) throw new Error('empty');
 
     const curated = new Map(SNAPSHOT.map(p => [p.name.toLowerCase(), p]));
