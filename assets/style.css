@@ -539,6 +539,11 @@ body.has-cursor .cursor-glow{ opacity:1; }
   0%,100%{ background-position:0% 50%; }
   50%    { background-position:100% 50%; }
 }
+/* Градиент нельзя вешать на .word: у него transform от анимации riseIn
+   (fill-mode forwards), а Firefox не рисует background-clip:text на элементе
+   с активным transform — буквы становятся серыми. Поэтому анимируется .word,
+   а градиент живёт на вложенном span без transform. */
+.hero-title .grad{ display:block; }
 
 .hero-role{
   font-family:var(--ff-mono);
