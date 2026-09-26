@@ -924,17 +924,16 @@ body.has-cursor .cursor-glow{ opacity:1; }
 }
 .filter-search:focus-within kbd{ opacity:0; }
 
-/* ═══════════ СЕТКА ПРОЕКТОВ ═══════════ */
+/* ═══════════ СПИСОК ПРОЕКТОВ ═══════════ */
 .projects-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(322px, 1fr));
-  gap:18px;
+  grid-template-columns:1fr;      /* список в столбик, не плитка */
+  gap:12px;
 }
 
 .card{
   position:relative;
-  display:flex; flex-direction:column;
-  padding:24px 22px 20px;
+  padding:15px 20px 15px 16px;
   background:linear-gradient(165deg, rgba(255,255,255,.055), rgba(255,255,255,.015));
   border:1px solid var(--line);
   border-radius:var(--radius);
@@ -945,6 +944,28 @@ body.has-cursor .cursor-glow{ opacity:1; }
              box-shadow .4s var(--ease), opacity .35s var(--ease);
   will-change:transform, opacity;
 }
+
+/* ── фон карточки: скрин из самой игры/программы ── */
+.card-shot{
+  position:absolute; inset:0; z-index:-3;
+  overflow:hidden; pointer-events:none;
+}
+.card-shot img{
+  width:100%; height:100%;
+  object-fit:cover;
+  object-position:center 24%;
+  opacity:.58; transform:scale(1.02);
+  transition:opacity .55s var(--ease), transform .8s var(--ease);
+}
+.card-shot::after{         /* текст слева и в центре, скрин проступает справа */
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(90deg,
+             rgba(5,6,15,.9) 0%, rgba(5,6,15,.88) 46%,
+             rgba(5,6,15,.74) 74%, rgba(5,6,15,.24) 100%);
+}
+.card.has-shot{ border-color:var(--line-2); }
+.card:hover .card-shot img{ opacity:.9; transform:scale(1.055); }
+
 .card::before{
   content:''; position:absolute; inset:0; z-index:-2;
   background:radial-gradient(420px circle at var(--mx,50%) var(--my,0%),
@@ -978,26 +999,41 @@ body.has-cursor .cursor-glow{ opacity:1; }
   to  { opacity:1; transform:none; }
 }
 
-.card-top{
-  display:flex; align-items:flex-start; gap:12px;
-  margin-bottom:14px;
+/* строка: [иконка] [текст] [кнопки] */
+.card-main{
+  position:relative; z-index:2;
+  display:flex; align-items:flex-start; gap:18px;
+}
+.card-side{
+  width:54px; flex-shrink:0;
 }
 .card-icon{
-  width:42px; height:42px;
+  width:52px; height:52px;
   flex-shrink:0;
   display:grid; place-items:center;
-  border-radius:13px;
+  border-radius:15px;
   background:color-mix(in srgb, var(--lang) 15%, transparent);
   border:1px solid color-mix(in srgb, var(--lang) 34%, transparent);
   font-family:var(--ff-mono);
   font-size:16px; font-weight:700;
   color:var(--lang);
-  transition:transform .45s var(--ease), background-color .35s;
+  overflow:hidden;
+  transition:transform .45s var(--ease), background-color .35s, box-shadow .35s;
 }
+.card-icon img{ width:100%; height:100%; object-fit:cover; }
 .card:hover .card-icon{
-  transform:rotate(-8deg) scale(1.08);
+  transform:rotate(-7deg) scale(1.07);
   background:color-mix(in srgb, var(--lang) 26%, transparent);
+  box-shadow:0 8px 22px -8px color-mix(in srgb, var(--lang) 70%, transparent);
 }
+/* подпись под иконкой убрана: слишком шумно в строке */
+
+.card-col{ flex:1; min-width:0; }
+.card-head{
+  display:flex; align-items:flex-start; justify-content:space-between;
+  gap:18px; flex-wrap:wrap;
+}
+.card-headtext{ min-width:0; }
 .card-name{
   font-family:var(--ff-display);
   font-weight:600;
@@ -1031,13 +1067,17 @@ body.has-cursor .cursor-glow{ opacity:1; }
 
 .card-desc{
   color:var(--text-dim);
-  font-size:14.4px;
-  line-height:1.62;
-  margin-bottom:16px;
-  flex:1;
+  font-size:14.2px;
+  line-height:1.6;
+  margin:7px 0 12px;
 }
 
-.card-tags{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:16px; }
+.card-foot{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:14px; flex-wrap:wrap;
+}
+
+.card-tags{ display:flex; flex-wrap:wrap; gap:6px; }
 .tag{
   padding:3.5px 9px;
   font-family:var(--ff-mono);
@@ -1051,14 +1091,11 @@ body.has-cursor .cursor-glow{ opacity:1; }
 .card:hover .tag{ transform:translateY(-1px); }
 
 .card-stats{
-  display:flex; align-items:center; gap:16px;
-  padding-top:14px;
-  margin-top:auto;
-  border-top:1px solid var(--line);
+  display:flex; align-items:center; gap:14px;
+  flex-shrink:0;
   font-family:var(--ff-mono);
   font-size:12px;
   color:var(--text-faint);
-  margin-bottom:14px;
   flex-wrap:wrap;
 }
 .card-stats span{ display:inline-flex; align-items:center; gap:5px; }
@@ -1066,8 +1103,8 @@ body.has-cursor .cursor-glow{ opacity:1; }
 .card-stats .hot{ color:#fbbf24; }
 .card-stats .dot-sep{ width:3px; height:3px; border-radius:50%; background:currentColor; opacity:.5; }
 
-.card-actions{ display:flex; gap:8px; }
-.card-actions .btn{ flex:1; --btn-py:9px; --btn-px:12px; font-size:13px; }
+.card-actions{ display:flex; gap:8px; flex:0 0 auto; }
+.card-actions .btn{ --btn-py:8px; --btn-px:13px; font-size:13px; }
 .icon-btn{
   width:38px;
   flex-shrink:0;
@@ -1299,6 +1336,19 @@ body.has-cursor .cursor-glow{ opacity:1; }
   .stats-grid{ gap:11px; }
   .stat{ padding:22px 12px; }
   .projects-grid{ grid-template-columns:1fr; }
+  /* строка проекта на телефоне: кнопки уезжают под описание, скрин чуть виднее */
+  .card{ padding:13px 14px; }
+  .card-main{ gap:12px; }
+  .card-head{ flex-direction:column; gap:9px; }
+  .card-stats{ padding-top:0; }
+  .card-foot{ flex-direction:column; align-items:stretch; gap:12px; }
+  .card-actions .btn{ flex:1; }
+  .icon-btn{ width:42px; }
+  .card-shot::after{
+    background:linear-gradient(180deg,
+               rgba(5,6,15,.90) 0%, rgba(5,6,15,.86) 45%,
+               rgba(5,6,15,.78) 100%);
+  }
   .term-body{ font-size:11px; }
   .to-top{ right:14px; bottom:14px; }
   .mobile-menu{ left:10px; right:10px; }

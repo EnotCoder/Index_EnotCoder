@@ -67,6 +67,7 @@ const SNAPSHOT = [
     stars: 2, forks: 0, license: 'GPL-3.0', pushed: '2026-09-25', beta: true,
     desc: '2D-песочница про свой магазин на Rust + wgpu: укладываешь полы, стены и декор, закупаешь стеллажи, обслуживаешь NPC-покупателей и следишь, чтобы бизнес не разорился. ECS на specs, балансировка на Lua.',
     tags: ['wgpu', 'specs', 'winit', 'mlua', 'sandbox'],
+    shot: 'cys', icon: 'cys',
   },
   {
     name: 'pixesh', full: null,
@@ -74,6 +75,7 @@ const SNAPSHOT = [
     stars: 3, forks: 0, license: 'MIT', pushed: '2026-09-12',
     desc: 'Минималистичный редактор пиксель-арта на Rust + egui: кисти, заливка, пипетка, слои, HSV-палитра, обрезка по выделению, зеркало, undo/redo на 50 шагов, вкладки с несколькими файлами и экспорт PNG с масштабом ×1–×16.',
     tags: ['egui', 'tool', 'editor', 'export'],
+    shot: 'pixesh', icon: 'pixesh',
   },
   {
     name: 'gomit', full: 'Gomit Engine',
@@ -81,6 +83,7 @@ const SNAPSHOT = [
     stars: 1, forks: 0, license: 'MIT', pushed: '2026-09-24',
     desc: 'Gomit Engine — форк Godot: кроссплатформенный движок для 2D и 3D игр с единым интерфейсом. Собирается через SCons, тянет GLM и работает поверх X11/Wayland.',
     tags: ['gamedev', 'engine', 'fork', 'scons'],
+    icon: 'gomit',
   },
   {
     name: 'ryng', full: null,
@@ -88,6 +91,7 @@ const SNAPSHOT = [
     stars: 0, forks: 0, license: null, pushed: '2026-09-25',
     desc: 'Прототип игры на проверку реакции: Bevy 0.19 и Rust 2024. Главное меню, переходы между сценами через States, анимации кнопок, масштабируемый спрайтовый фон и автоматический деспавн сущностей при выходе из сцены.',
     tags: ['bevy', 'prototype', 'states', 'gamedev'],
+    icon: 'ryng',
   },
   {
     name: 'Granny-clicker', full: null,
@@ -95,6 +99,7 @@ const SNAPSHOT = [
     stars: 1, forks: 0, license: 'MIT', pushed: '2026-09-23',
     desc: '2D-кликер для Яндекс Игр на Godot 4.7: клики, апгрейды, престиж и достижения. Плюс мини-игры — паутина ×2, бешеный дедушка ×2.5 и казино-медвежонок. Облачные сейвы через Player API, rewarded-реклама, офлайн-фолбэк на ПК.',
     tags: ['godot', 'clicker', 'yandex', 'monetize'],
+    shot: 'granny', icon: 'granny',
   },
   {
     name: 'game_wgpu', full: 'TMV Alpha',
@@ -109,6 +114,7 @@ const SNAPSHOT = [
     stars: 1, forks: 0, license: 'MIT', pushed: '2026-09-19',
     desc: 'Декомпилированные исходники Android-игры BadCheff на Godot: ресурсы, манифест и smali из Apktool, восстановленные Java-источники из jadx. Логика игры лежит в Godot-проекте внутри res/assets.',
     tags: ['reverse-engineering', 'apktool', 'jadx', 'godot'],
+    shot: 'badcheff', icon: 'badcheff',
   },
   {
     name: 'MyArch', full: 'Rofi launcher',
@@ -123,6 +129,7 @@ const SNAPSHOT = [
     stars: 2, forks: 0, license: null, pushed: '2026-07-23',
     desc: 'Набор CLI-утилит для повседневных задач. dvi качает видео и картинки с YouTube, VK, TikTok, Instagram и 1800+ площадок прямо в ~/Videos, dins рекурсивно ищет файл по имени. Ставится одним install.sh.',
     tags: ['cli', 'python', 'yt-dlp', 'scripts'],
+    shot: 'ltm_list',
   },
   {
     name: 'Flappy-GL', full: null,
@@ -667,43 +674,59 @@ function cardHTML(p, index) {
   const title = p.full ? `${p.name} <span>${esc(p.full)}</span>` : `<span>${esc(p.name)}</span>`;
   const license = p.license ? p.license.replace('GPL-', 'GPL ').replace('MIT', 'MIT') : null;
 
+  // фон — скрин из самой игры/программы, в боксе — её настоящая иконка
+  const icon = p.icon
+    ? `<img src="assets/picons/${esc(p.icon)}.webp" alt="" width="52" height="52" loading="lazy" decoding="async">`
+    : esc(p.short || p.lang.slice(0, 2));
   return `
-  <article class="card" style="--lang:${color};--rd:${index % 3}"
+  <article class="card${p.shot ? ' has-shot' : ''}" style="--lang:${color};--rd:${index % 3}"
            data-name="${esc(p.name.toLowerCase())}"
            data-bucket="${esc(p.bucket)}"
            data-desc="${esc((p.desc + ' ' + (p.tags || []).join(' ')).toLowerCase())}">
-    <div class="card-top">
-      <div class="card-icon">${esc(p.short || p.lang.slice(0, 2))}</div>
-      <div style="min-width:0">
-        <h3 class="card-name">${title}</h3>
-        <div class="card-sub">
-          <em>${esc(p.lang)}</em>
-          ${p.beta ? '<span class="badge-beta">BETA</span>' : ''}
-          ${license ? `<span class="lic">${esc(license)}</span>` : ''}
+    ${p.shot ? `<div class="card-shot"><img src="assets/shots/${esc(p.shot)}.webp" alt=""
+       loading="lazy" decoding="async"></div>` : ''}
+
+    <div class="card-main">
+      <div class="card-side">
+        <div class="card-icon">${icon}</div>
+      </div>
+
+      <div class="card-col">
+        <div class="card-head">
+          <div class="card-headtext">
+            <h3 class="card-name">${title}</h3>
+            <div class="card-sub">
+              <em>${esc(p.lang)}</em>
+              ${p.beta ? '<span class="badge-beta">BETA</span>' : ''}
+              ${license ? `<span class="lic">${esc(license)}</span>` : ''}
+            </div>
+          </div>
+
+          <div class="card-stats">
+            <span class="${p.stars ? 'hot' : ''}">${ICON_STAR} ${p.stars}</span>
+            <i class="dot-sep"></i>
+            <span>${ICON_FORK} ${p.forks}</span>
+            <i class="dot-sep"></i>
+            <span title="${esc(shortDate(p.pushed))}">обновлён ${relativeDate(p.pushed)}</span>
+          </div>
+        </div>
+
+        <p class="card-desc">${esc(p.desc)}</p>
+
+        <div class="card-foot">
+          <div class="card-tags">${(p.tags || []).map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>
+
+          <div class="card-actions">
+            <a class="btn btn-outline" href="${esc(p.url)}" target="_blank" rel="noopener">
+              ${ICON_EXT} На GitHub
+            </a>
+            <button class="icon-btn" data-copy="git clone ${esc(p.url)}.git"
+                    aria-label="Скопировать git clone ${esc(p.name)}" title="Скопировать git clone">
+              ${ICON_COPY}
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-
-    <p class="card-desc">${esc(p.desc)}</p>
-
-    <div class="card-tags">${(p.tags || []).map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>
-
-    <div class="card-stats">
-      <span class="${p.stars ? 'hot' : ''}">${ICON_STAR} ${p.stars}</span>
-      <i class="dot-sep"></i>
-      <span>${ICON_FORK} ${p.forks}</span>
-      <i class="dot-sep"></i>
-      <span title="${esc(shortDate(p.pushed))}">обновлён ${relativeDate(p.pushed)}</span>
-    </div>
-
-    <div class="card-actions">
-      <a class="btn btn-outline" href="${esc(p.url)}" target="_blank" rel="noopener">
-        ${ICON_EXT} На GitHub
-      </a>
-      <button class="icon-btn" data-copy="git clone ${esc(p.url)}.git"
-              aria-label="Скопировать git clone ${esc(p.name)}" title="Скопировать git clone">
-        ${ICON_COPY}
-      </button>
     </div>
 
     <a class="card-link" href="${esc(p.url)}" target="_blank" rel="noopener"
@@ -1071,6 +1094,9 @@ async function loadFromGitHub() {
         desc: c ? c.desc : (r.description || 'Репозиторий на GitHub — загляните внутрь.'),
         tags: c ? c.tags : [],
         beta: c ? c.beta : false,
+        // скрин и иконка живут только в курируемом снимке
+        shot: c ? c.shot : null,
+        icon: c ? c.icon : null,
         stars: r.stargazers_count,
         forks: r.forks_count,
         license: r.license ? r.license.spdx_id : null,
