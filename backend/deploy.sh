@@ -51,8 +51,10 @@ curl -s -X POST "${AUTH[@]}" \
 echo "▸ загружаю $WORKER_NAME.js"
 
 # необязательный ALLOWED_ORIGIN — если задан, CORS не будет открытым
+# main_module — строка с именем модуля; имя файла worker.js обязано совпадать,
+# иначе Cloudflare отвечает «No such module»
 META=$(jq -n --arg db "$DB_ID" --arg tok "$ADMIN_TOKEN" --arg origin "${ALLOWED_ORIGIN:-}" '{
-  main_module: true,
+  main_module: "worker.js",
   compatibility_date: "2026-09-01",
   bindings: ( [{ type: "d1", name: "DB", id: $db },
                { type: "plain_text", name: "ADMIN_TOKEN", text: $tok } ]
