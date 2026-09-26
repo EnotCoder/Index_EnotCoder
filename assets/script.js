@@ -140,6 +140,26 @@ const SNAPSHOT = [
   },
 ];
 
+/* ═══════════════════════════════════════════════════════════
+   ГАЛЕРЕЯ
+   Файлы лежат в assets/pictures/. На сайте — webp 1400 px,
+   исходные png в .gitignore, чтобы не тащить в репозиторий по 3 МБ.
+   ═══════════════════════════════════════════════════════════ */
+const GALLERY = [
+  {
+    src: 'assets/pictures/picture_one.webp',
+    w: 1400, h: 1895,                      // реальные пропорции после ресайза
+    title: 'Енот в рыцарских доспехах',
+    note: 'Художественный портрет, 1078 × 1459',
+  },
+  {
+    src: 'assets/pictures/picture_two.webp',
+    w: 1400, h: 1291,
+    title: 'Адмирал енот',
+    note: 'Мундир с орденом, 1306 × 1204',
+  },
+];
+
 const TECH_MARQUEE = [
   'Rust', 'wgpu', 'Bevy', 'winit', 'specs', 'egui', 'mlua', 'Lua',
   'Godot', 'GDScript', 'C++', 'OpenGL', 'GLM', 'SCons', 'Python', 'yt-dlp',
@@ -731,6 +751,9 @@ function cardHTML(p, index) {
 
     <a class="card-link" href="${esc(p.url)}" target="_blank" rel="noopener"
        aria-label="Открыть ${esc(p.name)} на GitHub" tabindex="-1"></a>
+
+    <div class="card-comments" data-project="${esc(p.name.toLowerCase())}"
+         data-title="${esc(p.name)}"></div>
   </article>`;
 }
 
@@ -752,6 +775,10 @@ function renderProjects() {
   }
 
   applyFilter();
+
+  // комментарии монтируются отдельным модулем, когда он загрузился
+  document.dispatchEvent(new CustomEvent('cards:rendered', { detail: { projects: list } }));
+  if (window.Comments) window.Comments.mountAll(grid);
 }
 
 /* фильтрация + поиск */
@@ -1126,6 +1153,201 @@ function updateStats() {
   const langs = new Set(projects.map(p => p.lang)).size;
   counters.set({ repos: projects.length, stars, langs });
 }
+
+/* ═══════════════════════════════════════════════════════════
+   21. ГАЛЕРЕЯ: СЕТКА И ПРОСМОТРЩИК
+   ═══════════════════════════════════════════════════════════ */
+(function gallery() {
+  const grid = $('#galleryGrid');
+  if (!grid || !GALLERY.length) return;
+
+  const lb      = $('#lightbox');
+  const lbImg   = $('#lbImg');
+  const lbTitle = $('#lbTitle');
+  const lbNote  = $('#lbNote');
+  const lbCount = $('#lbCount');
+  const lbDots  = $('#lbDots');
+  let i = 0, opener = null;
+
+  const counter = $('#galleryCount');
+  if (counter) counter.textContent = GALLERY.length;
+
+  /* ── сетка ── */
+  grid.innerHTML = GALLERY.map((p, n) => {
+    const r = (p.w / p.h).toFixed(4);
+    return `
+    <button class="shot" data-i="${n}" data-r="${r}" style="--ar:${r}"
+            aria-label="Открыть «${esc(p.title)}» в просмотрщике">
+      <span class="shot-frame">
+        <img src="${esc(p.src)}" alt="${esc(p.title)}" width="${p.w}" height="${p.h}"
+             loading="lazy" decoding="async">
+      </span>
+      <span class="shot-cap">
+        <b>${esc(p.title)}</b>
+        ${p.note ? `<i>${esc(p.note)}</i>` : ''}
+      </span>
+      <span class="shot-zoom" aria-hidden="true">
+        <svg viewBox="0 0 20 20" width="15" height="15"><path d="M8 4H4v4M12 4h4v4M8 16H4v-4M12 16h4v-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+    </button>`;
+  }).join('');
+
+  /* ── раскладка: в строке высота одна, ширина по пропорции ──
+     Слева направо набираем полотна, пока строка влезает в ширину
+     при максимальной высоте; потом считаем точную высоту строки. */
+  const MIN_H = 150;
+
+  function layoutGallery() {
+    const W = grid.clientWidth;
+    if (!W) return;
+
+    const cs = getComputedStyle(grid);
+    const gap = parseFloat(cs.columnGap) || 22;
+    const chrome = parseFloat(cs.getPropertyValue('--gal-chrome')) || 20;
+    const maxH = W < 700 ? 420 : 400;
+
+    const items = $$('.shot', grid).map(el => ({ el, r: parseFloat(el.dataset.r) || 1 }));
+    const widthAt = (row, h) =>
+      row.reduce((s, i) => s + h * i.r, 0) + gap * (row.length - 1) + chrome * row.length;
+
+    const rows = [];
+    let cur = [];
+    items.forEach(it => {
+      cur.push(it);
+      if (widthAt(cur, maxH) > W && cur.length > 1) {
+        cur.pop();
+        rows.push(cur);
+        cur = [it];
+      }
+    });
+    if (cur.length) rows.push(cur);
+
+    rows.forEach(row => {
+      const sum = row.reduce((s, i) => s + i.r, 0);
+      const h = clamp((W - gap * (row.length - 1) - chrome * row.length) / sum, MIN_H, maxH);
+      row.forEach(({ el, r }) => {
+        el.style.setProperty('--h', h.toFixed(1) + 'px');
+        el.style.width = (h * r + chrome).toFixed(1) + 'px';
+      });
+    });
+  }
+
+  layoutGallery();
+  let relayout;
+  window.addEventListener('resize', () => {
+    clearTimeout(relayout);
+    relayout = setTimeout(layoutGallery, 150);
+  });
+
+  /* ── точки навигации ── */
+  lbDots.innerHTML = GALLERY.map((p, n) =>
+    `<button class="lb-dot" data-i="${n}" aria-label="К «${esc(p.title)}»"></button>`).join('');
+
+  /* ── показ кадра ── */
+  function show(n) {
+    i = (n + GALLERY.length) % GALLERY.length;
+    const p = GALLERY[i];
+    lbImg.src = p.src;
+    lbImg.alt = p.title;
+    lbImg.width = p.w; lbImg.height = p.h;
+    lbTitle.textContent = p.title;
+    lbNote.textContent = p.note || '';
+    lbCount.textContent = `${i + 1} / ${GALLERY.length}`;
+    $$('.lb-dot', lbDots).forEach((d, k) => d.classList.toggle('on', k === i));
+    // фон рамки в тон картины
+    lb.style.setProperty('--tint', tint(p.src));
+  }
+
+  /* средний цвет полотна — подсвечивает рамку просмотрщика */
+  const tintCache = new Map();
+  function tint(src) {
+    if (tintCache.has(src)) return tintCache.get(src);
+    const c = 'rgba(20,24,50,.9)';
+    tintCache.set(src, c);
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const cv = document.createElement('canvas');
+        cv.width = cv.height = 8;
+        const ctx = cv.getContext('2d');
+        ctx.drawImage(img, 0, 0, 8, 8);
+        const d = ctx.getImageData(0, 0, 8, 8).data;
+        let r = 0, g = 0, b = 0;
+        for (let k = 0; k < d.length; k += 4) { r += d[k]; g += d[k + 1]; b += d[k + 2]; }
+        const n = d.length / 4;
+        const mix = (v) => Math.round(v / n * .22 + 8);
+        const out = `rgba(${mix(r)},${mix(g)},${mix(b)},.92)`;
+        tintCache.set(src, out);
+        if (lbImg.src.endsWith(src.split('/').pop())) lb.style.setProperty('--tint', out);
+      } catch (e) { /* canvas недоступен — останется запасной цвет */ }
+    };
+    img.src = src;
+    return c;
+  }
+
+  function open(n, trigger) {
+    opener = trigger || document.activeElement;
+    show(n);
+    lb.hidden = false;
+    document.body.classList.add('is-locked');
+    requestAnimationFrame(() => lb.classList.add('open'));
+    $('#lbClose').focus({ preventScroll: true });
+  }
+
+  function close() {
+    lb.classList.remove('open');
+    document.body.classList.remove('is-locked');
+    const done = () => { lb.hidden = true; };
+    reduceMotion ? done() : setTimeout(done, 240);
+    if (opener && opener.focus) opener.focus({ preventScroll: true });
+  }
+
+  /* ── события ── */
+  grid.addEventListener('click', e => {
+    const btn = e.target.closest('.shot');
+    if (!btn) return;
+    open(+btn.dataset.i, btn);
+  });
+
+  lb.addEventListener('click', e => {
+    if (e.target.closest('[data-lb-close]') || e.target.closest('#lbClose')) return close();
+    if (e.target.closest('#lbPrev')) return show(i - 1);
+    if (e.target.closest('#lbNext')) return show(i + 1);
+    const dot = e.target.closest('.lb-dot');
+    if (dot) show(+dot.dataset.i);
+  });
+
+  document.addEventListener('keydown', e => {
+    if (lb.hidden) return;
+    if (e.key === 'Escape')     { e.preventDefault(); close(); }
+    else if (e.key === 'ArrowLeft')  { e.preventDefault(); show(i - 1); }
+    else if (e.key === 'ArrowRight') { e.preventDefault(); show(i + 1); }
+  });
+
+  /* свайпы на телефоне */
+  let sx = 0, sy = 0;
+  lb.addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+  lb.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy)) show(i + (dx < 0 ? 1 : -1));
+    else if (dy > 70 && Math.abs(dy) > Math.abs(dx)) close();
+  }, { passive: true });
+
+  /* превью: показываем картинку, когда она близко к экрану */
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries, obs) => {
+      entries.forEach(en => {
+        if (!en.isIntersecting) return;
+        en.target.classList.add('in');
+        obs.unobserve(en.target);
+      });
+    }, { threshold: .15, rootMargin: '0px 0px -6% 0px' });
+    $$('.shot', grid).forEach(s => io.observe(s));
+  } else {
+    $$('.shot', grid).forEach(s => s.classList.add('in'));
+  }
+})();
 
 /* ═══════════════════════════════════════════════════════════
    ФИНАЛ

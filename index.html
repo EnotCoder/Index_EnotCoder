@@ -60,6 +60,7 @@
 
     <nav class="nav-links" aria-label="Основная навигация">
       <a href="#about" class="nav-link">Обо мне</a>
+      <a href="#gallery" class="nav-link">Галерея</a>
       <a href="#projects" class="nav-link">Проекты</a>
       <a href="#cta" class="nav-link">Контакты</a>
     </nav>
@@ -78,6 +79,7 @@
 
   <div class="mobile-menu" id="mobileMenu">
     <a href="#about">Обо мне</a>
+    <a href="#gallery">Галерея</a>
     <a href="#projects">Проекты</a>
     <a href="#cta">Контакты</a>
     <a href="https://github.com/EnotCoder" target="_blank" rel="noopener">GitHub ↗</a>
@@ -231,12 +233,35 @@
   </div>
 </section>
 
+<!-- ══════════════ ГАЛЕРЕЯ ══════════════ -->
+<section class="gallery section" id="gallery">
+  <div class="wrap">
+    <header class="section-head">
+      <div>
+        <p class="kicker" data-reveal><span>02</span> галерея</p>
+        <h2 class="section-title" data-scramble>Картины, <span class="grad">которые я сделал</span></h2>
+        <p class="section-sub" data-reveal>
+          Еноты в исторических костюмах, которых не бывает. Все полотна
+          сделаны с помощью ИИ — от промпта до готовой картинки.
+        </p>
+      </div>
+      <div class="gallery-count" data-reveal>
+        <b id="galleryCount">0</b>
+        <span>полотен</span>
+      </div>
+    </header>
+
+    <!-- работы добавляются в assets/script.js, массив GALLERY -->
+    <div class="gallery-grid" id="galleryGrid" data-reveal></div>
+  </div>
+</section>
+
 <!-- ══════════════ ПРОЕКТЫ ══════════════ -->
 <section class="projects section" id="projects">
   <div class="wrap">
     <header class="section-head">
       <div>
-        <p class="kicker" data-reveal><span>02</span> проекты</p>
+        <p class="kicker" data-reveal><span>03</span> проекты</p>
         <h2 class="section-title" data-scramble>Всё, что лежит <span class="grad">на GitHub</span></h2>
         <p class="section-sub" data-reveal>
           Каждый репозиторий — отдельная история: от прототипа на вечер до
@@ -277,7 +302,7 @@
            alt="" aria-hidden="true" width="150" height="150" loading="lazy">
     </picture>
 
-    <p class="kicker" data-reveal><span>03</span> контакты</p>
+    <p class="kicker" data-reveal>контакты</p>
     <h2 class="section-title center" data-scramble>Ещё что-нибудь <span class="grad">придумаем вместе?</span></h2>
     <p class="cta-text" data-reveal>
       Ищешь соавтора в Rust-проект, ревью кода или просто хочешь
@@ -334,6 +359,34 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<!-- ══════════════ ПРОСМОТРЩИК ГАЛЕРЕИ ══════════════ -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Просмотр картины" hidden>
+  <div class="lb-backdrop" data-lb-close></div>
+
+  <button class="lb-btn lb-close" id="lbClose" aria-label="Закрыть (Esc)">
+    <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M5 5l10 10M15 5 5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+  </button>
+
+  <button class="lb-btn lb-nav lb-prev" id="lbPrev" aria-label="Предыдущая (стрелка влево)">
+    <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="M12 4 6 10l6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+
+  <figure class="lb-figure" id="lbFigure">
+    <img id="lbImg" src="" alt="" width="1400" height="1000">
+    <figcaption class="lb-cap">
+      <b id="lbTitle"></b>
+      <span id="lbNote"></span>
+    </figcaption>
+  </figure>
+
+  <button class="lb-btn lb-nav lb-next" id="lbNext" aria-label="Следующая (стрелка вправо)">
+    <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="M8 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+
+  <div class="lb-count" id="lbCount" aria-live="polite"></div>
+  <div class="lb-dots" id="lbDots"></div>
+</div>
+
 <noscript>
   <div class="noscript-note">
     Для интерактивных анимаций нужен JavaScript. Список проектов:
@@ -342,5 +395,6 @@
 </noscript>
 
 <script src="assets/script.js"></script>
+<script src="assets/comments.js" defer></script>
 </body>
 </html>

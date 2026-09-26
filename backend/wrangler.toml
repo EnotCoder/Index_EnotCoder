@@ -1,0 +1,20 @@
+name = "enotcoder-comments"
+main = "worker.js"
+compatibility_date = "2026-09-01"
+
+# Привязка базы. Создать один раз:
+#   wrangler d1 create comments-db
+# и вписать полученный id сюда.
+[[d1_databases]]
+binding = "DB"
+database_name = "comments-db"
+database_id = "ВСТАВЬ_СЮДА_ID_ИЗ_WRANGLER_D1_CREATE"
+
+# Токен для удаления комментариев:
+#   wrangler secret put ADMIN_TOKEN
+[vars]
+# ALLOWED_ORIGIN = "https://enotcoder.github.io"
+
+# Подчистка счётчика раз в сутки
+[triggers]
+crons = ["17 4 * * *"]

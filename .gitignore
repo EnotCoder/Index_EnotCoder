@@ -3,3 +3,9 @@ Thumbs.db
 *.swp
 .idea/
 .vscode/
+
+# исходные картинки галереи по 3 МБ — на сайте лежат webp в assets/pictures/
+assets/pictures/*.png
+assets/pictures/*.jpg
+backend/.dev.vars
+backend/node_modules/
