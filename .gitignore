@@ -8,4 +8,5 @@ Thumbs.db
 assets/pictures/*.png
 assets/pictures/*.jpg
 backend/.dev.vars
+backend/.deployed-url
 backend/node_modules/
