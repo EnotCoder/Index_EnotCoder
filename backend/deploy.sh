@@ -16,7 +16,7 @@ set -euo pipefail
 : "${CLOUDFLARE_ACCOUNT_ID:?нет CLOUDFLARE_ACCOUNT_ID}"
 : "${ADMIN_TOKEN:?нет ADMIN_TOKEN}"
 
-API="https://api.cloudflare.com/client/v4"
+API="${CF_API:-https://api.cloudflare.com/client/v4}"   # CF_API — только для тестов
 AUTH=(-H "Authorization: Bearer ${CLOUDFLARE_TOKEN}" -H "Content-Type: application/json")
 HERE="$(cd "$(dirname "$0")" && pwd)"
 DB_NAME="comments-db"
