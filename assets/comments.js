@@ -8,11 +8,11 @@
 'use strict';
 
 /* ─────────── НАСТРОЙКИ (единственное место, которое нужно менять) ───────────
-   api: адрес бэкенда. Пока он пустой или недоступен — работает
-   локальное хранилище браузера.
-   Например: api: 'https://comments.example.workers.dev' */
+   api: адрес бэкенда (Cloudflare Worker, см. backend/README.md).
+   Пока он пустой или недоступен — комментарии работают в локальном
+   хранилище браузера, и у кнопки появляется плашка «local». */
 const CONFIG = {
-  api: '',                 // ← URL бэкенда
+  api: 'https://enotcoder-comments.enotcoder.workers.dev',
   limit: 200,              // максимум символов в комментарии
   nameLimit: 32,           // максимум символов в имени
   storageKey: 'enotcoder:comments:v1',

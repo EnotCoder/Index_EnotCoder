@@ -17,6 +17,9 @@ set -euo pipefail
 : "${ADMIN_TOKEN:?нет ADMIN_TOKEN}"
 
 API="${CF_API:-https://api.cloudflare.com/client/v4}"   # CF_API — только для тестов
+# Заголовок Content-Type: application/json перебивает multipart у curl -F,
+# поэтому для загрузки воркера идём только с Bearer
+TOKH=(-H "Authorization: Bearer ${CLOUDFLARE_TOKEN}")
 AUTH=(-H "Authorization: Bearer ${CLOUDFLARE_TOKEN}" -H "Content-Type: application/json")
 HERE="$(cd "$(dirname "$0")" && pwd)"
 DB_NAME="comments-db"
@@ -56,6 +59,7 @@ echo "▸ загружаю $WORKER_NAME.js"
 META=$(jq -n --arg db "$DB_ID" --arg tok "$ADMIN_TOKEN" --arg origin "${ALLOWED_ORIGIN:-}" '{
   main_module: "worker.js",
   compatibility_date: "2026-09-01",
+  workers_dev: true,
   bindings: ( [{ type: "d1", name: "DB", id: $db },
                { type: "plain_text", name: "ADMIN_TOKEN", text: $tok } ]
              + (if $origin != "" then [{ type: "plain_text", name: "ALLOWED_ORIGIN", text: $origin }] else [] end) )
@@ -64,7 +68,7 @@ META=$(jq -n --arg db "$DB_ID" --arg tok "$ADMIN_TOKEN" --arg origin "${ALLOWED_
 META_FILE=$(mktemp)
 printf '%s' "$META" > "$META_FILE"
 
-curl -s -X PUT "${AUTH[@]}" \
+curl -s -X PUT "${TOKH[@]}" \
   "$API/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/scripts/$WORKER_NAME" \
   -F "metadata=@$META_FILE;type=application/json" \
   -F "worker.js=@$HERE/worker.js;type=application/javascript+module" \

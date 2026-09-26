@@ -19,17 +19,25 @@ const MAX_PER_PROJECT = 500;
 /* какой Origin отдавать в CORS: '*' или конкретный домен из ALLOWED_ORIGIN */
 let ALLOW = '*';
 
+const corsHeaders = () => ({
+  'Access-Control-Allow-Origin': ALLOW,
+  'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  'Access-Control-Max-Age': '86400',
+});
+
 const json = (data, status = 200) => new Response(JSON.stringify(data), {
   status,
   headers: {
     'Content-Type': 'application/json; charset=utf-8',
-    'Access-Control-Allow-Origin': ALLOW,
-    'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    'Access-Control-Max-Age': '86400',
+    ...corsHeaders(),
     'Cache-Control': 'no-store',
   },
 });
+
+/* preflight: у 204 не должно быть тела, иначе fetch в браузере падает
+   с «Failed to fetch» ещё до отправки POST */
+const preflight = () => new Response(null, { status: 204, headers: corsHeaders() });
 
 const fail = (error, status) => json({ error }, status);
 
@@ -133,7 +141,7 @@ export default {
 
   async fetch(request, env) {
     ALLOW = env.ALLOWED_ORIGIN || '*';
-    if (request.method === 'OPTIONS') return json({}, 204);
+    if (request.method === 'OPTIONS') return preflight();
     if (!env.DB) return fail('нет привязки D1 (DB)', 500);
 
     const url = new URL(request.url);
