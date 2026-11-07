@@ -330,6 +330,39 @@ $$('img[data-fallback]').forEach(img => {
 })();
 
 /* ═══════════════════════════════════════════════════════════
+   NEW YEAR: SNOWFALL
+   ═══════════════════════════════════════════════════════════ */
+(function snowfall() {
+  if (reduceMotion) return;
+  const container = document.createElement('div');
+  container.className = 'snow-container';
+  container.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(container);
+
+  const count = 50;
+  for (let i = 0; i < count; i++) {
+    createSnowflake(container);
+  }
+
+  function createSnowflake(parent) {
+    const flake = document.createElement('div');
+    flake.className = 'snowflake';
+    const size = rand(2, 6);
+    const left = Math.random() * 100;
+    const duration = rand(5, 15);
+    const delay = rand(0, 10);
+
+    flake.style.width = size + 'px';
+    flake.style.height = size + 'px';
+    flake.style.left = left + '%';
+    flake.style.animationDuration = duration + 's';
+    flake.style.animationDelay = '-' + delay + 's';
+
+    parent.appendChild(flake);
+  }
+})();
+
+/* ═══════════════════════════════════════════════════════════
    4. СВЕЧЕНИЕ ЗА КУРСОРОМ
    ═══════════════════════════════════════════════════════════ */
 (function cursorGlow() {

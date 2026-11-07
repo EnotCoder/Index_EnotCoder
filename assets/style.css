@@ -42,6 +42,66 @@
   --ease-out:  cubic-bezier(.16,1,.3,1);
   --nav-h:     72px;
   --wrap:      1200px;
+
+  /* New Year colors */
+  --ny-red: #ff4d4d;
+  --ny-green: #2ecc71;
+  --ny-gold: #f1c40f;
+}
+
+/* ─────────── NEW YEAR DECOR ─────────── */
+.snow-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.snowflake {
+  position: absolute;
+  top: -10px;
+  background: white;
+  border-radius: 50%;
+  opacity: 0.8;
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(100vh);
+  }
+}
+
+.garland {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  display: flex;
+  justify-content: space-around;
+  z-index: 10000;
+  pointer-events: none;
+}
+
+.light {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  animation: flash 1.5s infinite alternate;
+}
+
+.light:nth-child(4n+1) { background: var(--ny-red); box-shadow: 0 0 10px var(--ny-red); animation-delay: 0s; }
+.light:nth-child(4n+2) { background: var(--ny-green); box-shadow: 0 0 10px var(--ny-green); animation-delay: 0.5s; }
+.light:nth-child(4n+3) { background: var(--ny-gold); box-shadow: 0 0 10px var(--ny-gold); animation-delay: 1s; }
+.light:nth-child(4n+4) { background: var(--cyan); box-shadow: 0 0 10px var(--cyan); animation-delay: 1.5s; }
+
+@keyframes flash {
+  from { opacity: 0.4; }
+  to { opacity: 1; }
 }
 
 /* ─────────── reset ─────────── */
