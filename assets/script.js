@@ -72,10 +72,18 @@ const SNAPSHOT = [
   {
     name: 'pixesh', full: null,
     lang: 'Rust', short: 'rs', bucket: 'Rust',
-    stars: 3, forks: 0, license: 'MIT', pushed: '2026-09-12',
-    desc: 'Минималистичный редактор пиксель-арта на Rust + egui: кисти, заливка, пипетка, слои, HSV-палитра, обрезка по выделению, зеркало, undo/redo на 50 шагов, вкладки с несколькими файлами и экспорт PNG с масштабом ×1–×16.',
-    tags: ['egui', 'tool', 'editor', 'export'],
+    stars: 3, forks: 0, license: 'MIT', pushed: '2026-11-07',
+    desc: 'Минималистичный редактор пиксель-арта на Rust + egui: 17 эффектов с live-превью, слои, анимация кадров, трансформация выделения, настраиваемый интерфейс с перетаскиванием панелей, история undo/redo до 50 шагов и экспорт PNG.',
+    tags: ['egui', 'tool', 'editor', 'effects', 'animation'],
     shot: 'pixesh', icon: 'pixesh',
+  },
+  {
+    name: 'FRGlib', full: 'Rust lib',
+    lang: 'Rust', short: 'rs', bucket: 'Rust',
+    stars: 2, forks: 0, license: 'MIT', pushed: '2026-11-07',
+    desc: 'Легковесная Rust-обвязка над SDL3: управление окнами, рендерер, обработка событий, тайловые карты, камера и базовая UI-система (кнопки, слайдеры, кеш текста). Минимум зависимостей, поддержка пиксель-арта и встроенный загрузчик текстур.',
+    tags: ['sdl3', 'graphics', 'gamedev', 'ui'],
+    icon: 'frglib',
   },
   {
     name: 'gomit', full: 'Gomit Engine',
