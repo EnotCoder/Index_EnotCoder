@@ -149,11 +149,11 @@ const SNAPSHOT = [
     shot: 'flappy_gl', icon: 'flappy_gl',
   },
   {
-    name: 'mfif', full: null,
-    lang: 'Rust', short: 'rs', bucket: 'Rust',
-    stars: 0, forks: 0, license: 'MIT', pushed: '2026-11-08',
-    desc: 'Минималистичный просмотрщик изображений на Rust + egui. Быстрая навигация, поддержка основных форматов и фокус на производительности.',
-    tags: ['egui', 'image-viewer', 'tool'],
+    name: 'my_friend_is_fgoty', full: null,
+    lang: 'GDScript', short: 'gd', bucket: 'GDScript',
+    stars: 2, forks: 0, license: null, pushed: '2026-11-02',
+    desc: '3D game',
+    tags: ['godot', '3d', 'gamedev'],
     shot: 'mfif', icon: 'mfif',
   },
 ];
