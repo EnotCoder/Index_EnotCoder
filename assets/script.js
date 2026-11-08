@@ -83,7 +83,7 @@ const SNAPSHOT = [
     stars: 2, forks: 0, license: 'MIT', pushed: '2026-11-07',
     desc: 'Легковесная Rust-обвязка над SDL3: управление окнами, рендерер, обработка событий, тайловые карты, камера и базовая UI-система (кнопки, слайдеры, кеш текста). Минимум зависимостей, поддержка пиксель-арта и встроенный загрузчик текстур.',
     tags: ['sdl3', 'graphics', 'gamedev', 'ui'],
-    icon: 'frglib',
+    shot: 'frglib', icon: 'frglib',
   },
   {
     name: 'gomit', full: 'Gomit Engine',
@@ -131,7 +131,6 @@ const SNAPSHOT = [
     stars: 0, forks: 0, license: null, pushed: '2026-09-18',
     desc: 'Лаунчер для Super+D в связке bspwm + sxhkd: тема rofi в палитре Catppuccin Mocha, сетка 4×4 с иконками Papirus, fuzzy-поиск с историей и переключатель режимов drun / run / window.',
     tags: ['linux', 'bspwm', 'sxhkd', 'rofi'],
-    shot: 'mfif',
   },
   {
     name: 'ltm_list', full: null,
@@ -155,7 +154,6 @@ const SNAPSHOT = [
     stars: 0, forks: 0, license: 'MIT', pushed: '2026-11-08',
     desc: 'Минималистичный просмотрщик изображений на Rust + egui. Быстрая навигация, поддержка основных форматов и фокус на производительности.',
     tags: ['egui', 'image-viewer', 'tool'],
-    shot: 'mfif', icon: 'mfif',
   },
 ];
 
