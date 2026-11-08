@@ -154,6 +154,7 @@ const SNAPSHOT = [
     stars: 0, forks: 0, license: 'MIT', pushed: '2026-11-08',
     desc: 'Минималистичный просмотрщик изображений на Rust + egui. Быстрая навигация, поддержка основных форматов и фокус на производительности.',
     tags: ['egui', 'image-viewer', 'tool'],
+    shot: 'mfif', icon: 'mfif',
   },
 ];
 
