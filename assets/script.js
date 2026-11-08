@@ -99,7 +99,7 @@ const SNAPSHOT = [
     stars: 0, forks: 0, license: null, pushed: '2026-09-25',
     desc: 'Прототип игры на проверку реакции: Bevy 0.19 и Rust 2024. Главное меню, переходы между сценами через States, анимации кнопок, масштабируемый спрайтовый фон и автоматический деспавн сущностей при выходе из сцены.',
     tags: ['bevy', 'prototype', 'states', 'gamedev'],
-    icon: 'ryng',
+    shot: 'ryng', icon: 'ryng',
   },
   {
     name: 'Granny-clicker', full: null,
@@ -115,6 +115,7 @@ const SNAPSHOT = [
     stars: 2, forks: 0, license: null, pushed: '2026-08-02',
     desc: 'Просмотрщик 3D-моделей на wgpu: OBJ, glTF/glb и бинарный STL с автоопределением по расширению. Орбитальная камера, тёмный UI в стиле Blender с FPS, сетка на плоскости XZ, вращение и перенос моделей.',
     tags: ['wgpu', '3d', 'viewer', 'gltf'],
+    shot: 'frglib',
   },
   {
     name: 'BadCheff', full: null,
@@ -130,6 +131,7 @@ const SNAPSHOT = [
     stars: 0, forks: 0, license: null, pushed: '2026-09-18',
     desc: 'Лаунчер для Super+D в связке bspwm + sxhkd: тема rofi в палитре Catppuccin Mocha, сетка 4×4 с иконками Papirus, fuzzy-поиск с историей и переключатель режимов drun / run / window.',
     tags: ['linux', 'bspwm', 'sxhkd', 'rofi'],
+    shot: 'mfif',
   },
   {
     name: 'ltm_list', full: null,
@@ -137,7 +139,7 @@ const SNAPSHOT = [
     stars: 2, forks: 0, license: null, pushed: '2026-07-23',
     desc: 'Набор CLI-утилит для повседневных задач. dvi качает видео и картинки с YouTube, VK, TikTok, Instagram и 1800+ площадок прямо в ~/Videos, dins рекурсивно ищет файл по имени. Ставится одним install.sh.',
     tags: ['cli', 'python', 'yt-dlp', 'scripts'],
-    shot: 'ltm_list',
+    shot: 'ltm_list', icon: 'ltm_list',
   },
   {
     name: 'Flappy-GL', full: null,
@@ -145,6 +147,15 @@ const SNAPSHOT = [
     stars: 1, forks: 0, license: null, pushed: '2026-02-15',
     desc: 'Клон Flappy Bird на голом OpenGL: свой шейдер, класс спрайта на stb_image, текст и прямоугольники отрисовываются вручную. Вендорнутый GLM, сборка через Makefile.',
     tags: ['opengl', 'game', 'glfw', 'glm'],
+    shot: 'flappy_gl', icon: 'flappy_gl',
+  },
+  {
+    name: 'mfif', full: null,
+    lang: 'Rust', short: 'rs', bucket: 'Rust',
+    stars: 0, forks: 0, license: 'MIT', pushed: '2026-11-08',
+    desc: 'Минималистичный просмотрщик изображений на Rust + egui. Быстрая навигация, поддержка основных форматов и фокус на производительности.',
+    tags: ['egui', 'image-viewer', 'tool'],
+    shot: 'mfif', icon: 'mfif',
   },
 ];
 
